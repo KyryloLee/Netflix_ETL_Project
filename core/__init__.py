@@ -1,4 +1,4 @@
 from .create_connection import create_connection
-from .rating_table import RatingTable
+from .unique_name_table import UniqueNameTable
 
 __all__ = ['rating_table', 'create_connection']
