@@ -2,25 +2,52 @@ from os import getcwd
 from os import path
 
 from csv import DictReader
-from collections import defaultdict
-from core import create_connection, UniqueNameTable
+from core import create_connection, UniqueNameTable, UniqueIdTable
 
 RAW_DATA = path.join(getcwd(), 'raw_data', 'netflix_titles.csv')
 DB_PATH = path.join(getcwd(), 'db', 'Netflix.db')
-UNIQUE_NAME_COL = ['type', 'director'] 
+COL_TO_TABLE_NAMES = {
+    'type': 'Types',
+    'rating': 'Ratings'
+}
+
+INT_COL_TO_TABLE_NAMES = {
+    'release_year': 'Release_years'
+}
+
+COL_WITH_MULTY_VALUES_TO_TABLE_NAMES = {
+    'director': 'Directors',
+    'cast': 'Actors',
+    'country': 'Countries',
+    'listed_in': 'Genres'
+}
+
+def insert_data_in_tables(row, tables):
+    for k,table in tables.items():
+        
+        if k in COL_TO_TABLE_NAMES.keys():
+            table.insert_data([row[k]])
+
+        elif k in INT_COL_TO_TABLE_NAMES.keys():
+            table.insert_data([int(row[k])])
+
+        elif k in COL_WITH_MULTY_VALUES_TO_TABLE_NAMES.keys():
+            for value in row[k].split(','):
+                table.insert_data([value.strip()])
 
 if __name__=='__main__':
     conn = create_connection(DB_PATH)
 
     with conn:
         cursor = conn.cursor()
-        
-        type_table = TypesTable('Type', cursor)
-        rating_table = RatingTable(conn)
 
+        tables = {k: UniqueNameTable(v, cursor) for k,v in COL_TO_TABLE_NAMES.items()}
+        tables.update({k: UniqueIdTable(v, cursor) for k,v in INT_COL_TO_TABLE_NAMES.items()})
+        tables.update({k: UniqueNameTable(v, cursor) for k,v in COL_WITH_MULTY_VALUES_TO_TABLE_NAMES.items()})
+        
         with open(RAW_DATA) as raw_data:
             reader = DictReader(raw_data)
             for row in reader:
-                type_table.insert_data([row['type']])
-                rating_table.insert_data([row['rating']])
+                insert_data_in_tables(row, tables)
+        
         print('All done')

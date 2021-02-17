@@ -12,13 +12,13 @@ class BaseTable():
         # Values like self.table_name must be defined in child classes
         print('Execute command:', self.create_table)
         command = self.create_table.format(self.table_name, ','.join(self.columns))
-        self.curr.c.execute(command)
+        self.cur.execute(command)
 
     def insert_data(self, data:list):
         insert_values = ','.join(['?'] * len(data))
         values = data
         try:
-            self.curr.execute(
+            self.cur.execute(
                 self.insert.format(self.table_name, insert_values),
                 values
             )
