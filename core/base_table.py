@@ -4,6 +4,7 @@ class BaseTable():
         self.create_table = "create table if not exists {0} ({1}) without rowid;"
         self.insert = 'insert into {0} values({1})'
         self.delete = 'delete from {0} where ?=?'
+        self.update = 'update {0} set ?=? where ?=?'
         self.conn = connector
 
         #create or connect to table
@@ -39,5 +40,12 @@ class BaseTable():
         except Exception as e:
             print(e)
 
-    def update(self):
-        pass
+    def update(self, set_col, set_value, where_col, where_value):
+        c = self.conn.cursor()
+        try:
+            c.execute(
+                self.update.formta(self.table_name),
+                set_col, set_value, where_col, where_value
+            )
+        except Exception as e:
+            print(e)
