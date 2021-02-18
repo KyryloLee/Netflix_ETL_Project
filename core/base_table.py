@@ -1,3 +1,5 @@
+import sqlite3
+
 class BaseTable():
     def __init__(self, cur):
         # Base commands
@@ -22,8 +24,10 @@ class BaseTable():
                 self.insert.format(self.table_name, insert_values),
                 values
             )
-        except Exception as e:
-            print(e)
+        except sqlite3.IntegrityError as e:
+            # Ignore UNIQUE error
+            if not str(e).startswith('UNIQUE'):
+                raise()
 
     def delete_data(self, value):
         pass

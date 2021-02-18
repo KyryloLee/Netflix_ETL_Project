@@ -2,7 +2,7 @@ from os import getcwd
 from os import path
 
 from csv import DictReader
-from core import create_connection, UniqueNameTable, UniqueIdTable
+from core import create_connection, UniqueNameTable, UniqueIdTable, Movies
 
 RAW_DATA = path.join(getcwd(), 'raw_data', 'netflix_titles.csv')
 DB_PATH = path.join(getcwd(), 'db', 'Netflix.db')
@@ -26,7 +26,7 @@ def insert_data_in_tables(row, tables):
     for k,table in tables.items():
         
         if k in COL_TO_TABLE_NAMES.keys():
-            table.insert_data([row[k]])
+            table.insert_data([row[k].strip()])
 
         elif k in INT_COL_TO_TABLE_NAMES.keys():
             table.insert_data([int(row[k])])
@@ -45,9 +45,12 @@ if __name__=='__main__':
         tables.update({k: UniqueIdTable(v, cursor) for k,v in INT_COL_TO_TABLE_NAMES.items()})
         tables.update({k: UniqueNameTable(v, cursor) for k,v in COL_WITH_MULTY_VALUES_TO_TABLE_NAMES.items()})
         
+        movie_table = Movies(cursor)
+
         with open(RAW_DATA) as raw_data:
             reader = DictReader(raw_data)
             for row in reader:
                 insert_data_in_tables(row, tables)
-        
+                movie_table.insert_data(row)
+
         print('All done')
