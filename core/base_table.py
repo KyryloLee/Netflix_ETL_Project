@@ -12,7 +12,6 @@ class BaseTable():
 
     def _connect_to_table(self):
         # Values like self.table_name must be defined in child classes
-        print('Execute command:', self.create_table)
         command = self.create_table.format(self.table_name, ','.join(self.columns))
         self.cur.execute(command)
 

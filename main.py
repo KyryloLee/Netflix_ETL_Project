@@ -2,7 +2,8 @@ from os import getcwd
 from os import path
 
 from csv import DictReader
-from core import create_connection, UniqueNameTable, UniqueIdTable, Movies, IdToNamesRelation
+from core import create_connection, UniqueNameTable,\
+    UniqueIdTable, Movies, IdToNamesRelation, create_main_view
 
 RAW_DATA = path.join(getcwd(), 'raw_data', 'netflix_titles.csv')
 DB_PATH = path.join(getcwd(), 'db', 'Netflix.db')
@@ -26,7 +27,8 @@ COL_WITH_MULTY_VALUES_TO_TABLE_NAMES = {
 RELATION_COLUMNS_TO_TABLE = [
     ('Movie_directors', ('Movies','Directors'), ('show_id','director')),
     ('Movie_cast', ('Movies','Actors'), ('show_id','cast')),
-    ('Movie_country', ('Movies','Countries'), ('show_id','country'))
+    ('Movie_country', ('Movies','Countries'), ('show_id','country')),
+    ('Movie_genre', ('Movies', 'Genres'), ('show_id', 'listed_in'))
 ]
 
 def insert_data_into_tables(row, tables):
@@ -68,5 +70,6 @@ if __name__=='__main__':
             for row in reader:
                 insert_data_into_tables(row, tables)
                 insert_data_into_relation_tables(row, relation_tables)
-       
+
+        create_main_view(cursor)
         print('All done')

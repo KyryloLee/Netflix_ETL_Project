@@ -9,11 +9,13 @@ class Movies(BaseTable):
             'title text not null',
             'date_added text not null',
             'release_year integer not null',
+            'rating text',
             'duration integer',
             'seasons integer',
             'description text',
             'foreign key (type) references Types(name)',
-            'foreign key (release_year) references Realease_years(id)'
+            'foreign key (release_year) references Release_years(id)',
+            'foreign key (rating) references Ratings(name)'
         ]
         f = lambda x: x
         self.in_data_structure = [
@@ -22,6 +24,7 @@ class Movies(BaseTable):
             ('title', f),
             ('date_added', f),
             ('release_year', int),
+            ('rating', f),
             ('duration', lambda x: int(x.split()[0]) if x.split()[1].startswith('min') else None),
             ('duration', lambda x: int(x.split()[0]) if x.split()[1].startswith('Season') else None),
             ('description',f)
@@ -34,5 +37,5 @@ class Movies(BaseTable):
         Input:
             data - dict with structure like self.in_data_structure and same key names.
         """
-        parsed_data = [ x[1]( data[ x[0] ] ) for x in self.in_data_structure]
+        parsed_data = [ x[1]( data[x[0]] ) for x in self.in_data_structure]
         BaseTable.insert_data(self, parsed_data)
