@@ -28,7 +28,7 @@ class Movies(BaseTable):
         ]
         BaseTable.__init__(self, cur)
 
-    def insert_data(self, data:dict):
+    def parse_and_insert_data(self, data:dict):
         """
         Insertin data in Movie table.
         Input:

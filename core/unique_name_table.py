@@ -6,7 +6,7 @@ class UniqueNameTable(BaseTable):
         self.table_name = table_name
         
         self.columns = [
-            'name text primary key not null unique'
+            'name text primary key unique'
         ]
 
         BaseTable.__init__(self, cur)
