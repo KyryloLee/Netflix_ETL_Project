@@ -31,7 +31,13 @@ RELATION_COLUMNS_TO_TABLE = [
     ('Movie_genre', ('Movies', 'Genres'), ('show_id', 'listed_in'))
 ]
 
-def insert_data_into_tables(row, tables):
+def insert_data_into_tables(row: dict, tables: dict):
+    """
+    The function parses csv data row into tables.
+    Input:
+        row - csv row with data.
+        tables - a dictionary with a column name to table name relation.
+    """
     for k,table in tables.items():
         
         if k in COL_TO_TABLE_NAMES.keys():
@@ -46,8 +52,14 @@ def insert_data_into_tables(row, tables):
         else:
             table.parse_and_insert_data(row)
 
-def insert_data_into_relation_tables(row, tables):
-    for k, table in tables.items():
+def insert_data_into_relation_tables(row: dict, relation: list):
+    """
+    The function adds a link to tables.
+    Input:
+        row - csv data row.
+        tables - dictionary with the relation table name, data table names and columns in csv row.
+    """
+    for k, table in relation.items():
         movie_id, names = row.get(k[2][0]), row.get(k[2][1]).split(',')
         for x in names:
             table.insert_data([movie_id, x.strip()])

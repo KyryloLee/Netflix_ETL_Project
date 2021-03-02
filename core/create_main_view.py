@@ -1,4 +1,4 @@
-def create_main_view(cur):
+def create_main_view(cur: "sqlite3.Cursor"):
     cmd = """
 create view if not exists main_view
 as

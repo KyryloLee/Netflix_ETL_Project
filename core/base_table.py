@@ -1,7 +1,10 @@
 import sqlite3
 
 class BaseTable():
-    def __init__(self, cur):
+    """
+    Class with base functionality (create, insert).
+    """
+    def __init__(self, cur: 'sqlite3.Cursor'):
         # Base commands
         self.create_table = "create table if not exists {0} ({1}) without rowid;"
         self.insert = 'insert into {0} values({1});'
@@ -18,18 +21,9 @@ class BaseTable():
     def insert_data(self, data:list):
         insert_values = ','.join(['?'] * len(data))
         values = data
-        try:
-            self.cur.execute(
-                self.insert.format(self.table_name, insert_values),
-                values
-            )
-        except sqlite3.IntegrityError as e:
-            # Ignore UNIQUE error
-            if not str(e).startswith('UNIQUE'):
-                raise()
+        self.cur.execute(
+            self.insert.format(self.table_name, insert_values),
+            values
+        )
+        print(data, 'inserted into ', self.table_name)
 
-    def delete_data(self, value):
-        pass
-
-    def update_data(self, set_col, set_value, where_col, where_value):
-        pass
