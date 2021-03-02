@@ -85,6 +85,7 @@ if __name__=='__main__':
 
         relation_tables = {k: IdToNamesRelation(k[0], cursor, *k[1]) for k in RELATION_COLUMNS_TO_TABLE}
 
+        # parse data into tables
         with open(RAW_DATA) as raw_data:
             reader = DictReader(raw_data)
             for row in reader:

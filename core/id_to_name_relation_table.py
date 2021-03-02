@@ -23,3 +23,5 @@ class IdToNamesRelation(BaseTable):
 
         if len(same_data) == 0:
             BaseTable.insert_data(self, data)
+        else:
+            print('relation ', data, ' already exists.')

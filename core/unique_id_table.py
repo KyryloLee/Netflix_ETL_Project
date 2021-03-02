@@ -19,3 +19,5 @@ class UniqueIdTable(BaseTable):
 
         if len(same_data) == 0:
             BaseTable.insert_data(self, data)
+        else:
+            print('id ', data, ' already exists.')
